@@ -29,6 +29,8 @@ class AlertStack :
     
     def pop(self) :
         # remove and return most recent alert from top of stack
+        if self.is_empty() :
+            raise IndexError("Pop failed. AlertStack is empty.")
         return self.stack.pop()
     
     def peep(self) :
@@ -41,12 +43,18 @@ class AlertStack :
     def undo(self) :
         # pop latest alert off main log and push into redo stack
         # allows user to revert to previous alert state through CLI
+        if self.is_empty() :
+            return None
+        
         undone_alert = self.stack.pop()
         self.redo_stack.append(undone_alert)
         return undone_alert
     
     def redo(self) :
         # pop latest alert off redo stack and push back into main log
+        if len(self.redo_stack) == 0 :
+            return None
+        
         restored_alert = self.redo_stack.pop()
         self.stack.append(restored_alert)
         return restored_alert
