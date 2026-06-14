@@ -62,7 +62,7 @@ def physiological_stream(base_bpm=70.0, sampling_rate=25.0) :
                     timestamp = time.time()
                     yield (frozen_value, timestamp, label)
                     frame += 1
-                anomaly_cooldown = fram + 50
+                anomaly_cooldown = frame + 50
             elif anomaly_choice == 'SINUS_PAUSE' :
                 # Sinus Pause / SA Block: A temporary delay creating an elongated baseline gap
                 label = 'SINUS_PAUSE'
