@@ -23,7 +23,7 @@ class AnomalyDetector :
         self.alerts = alert_log
         self.top_k = priority_heap
 
-        self.last_peak_timestamp = Non
+        self.last_peak_timestamp = None
         self.rolling_interval_sum = 0.0
         self.peak_count = 0
     
@@ -71,7 +71,7 @@ class AnomalyDetector :
         # ---------------------------------------------------------------------
         # If the standard deviation drops exceptionally close to zero over our window
         elif self.window.size >= 20 and std_dev < 0.15 :
-            alert {
+            alert = {
                 "type": "ASYSTOLE",
                 "value": value,
                 "timestamp": timestamp,
@@ -85,7 +85,7 @@ class AnomalyDetector :
         # First, run a micro peak-detection check using our random access buffer
         # A peak is a point greater than its neighbors, rising above a threshold (e.g., 78)
         if self.window.size >= 3 :
-            val = self.window[self.window.size - 1][0]
+            prev_val = self.window[self.window.size - 1][0]
             mid_val = self.window[self.window.size - 2][0]
             old_val = self.window[self.window.size - 3][0]
             mid_time = self.window[self.window.size - 2][1]
@@ -97,13 +97,13 @@ class AnomalyDetector :
                         avg_interval = self.rolling_interval_sum / self.peak_count
                         if current_interval > (1.45 * avg_interval) :
                             deviation_pct = (current_interval - avg_interval) / avg_interval
-                            severity = min(1.0, deviation_pct, 2.0)
+                            severity = min(1.0, deviation_pct / 2.0)
                             alert = {
                                 "type": "SINUS_PAUSE",
                                 "value": mid_val,
                                 "timestamp": mid_time,
                                 "severity": round(severity, 3),
-                                "desc": f"Sinus Pause detected: Beat interval stretched to {current_interval:.2f}s
+                                "desc": f"Sinus Pause detected: Beat interval stretched to {current_interval:.2f}s"
                             }
                         self.rolling_interval_sum += current_interval
                         self.peak_count += 1
