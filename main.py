@@ -65,7 +65,7 @@ def main() :
                 sorted_vips = priority_heap.get_sorted_elements()
                 display.print_top_k_summary(sorted_vips)
                 time.sleep(1.0)
-            time.steep(0.04)
+            time.sleep(0.04)
     except KeyboardInterrupt :
         print("\n Simulation terminated via terminal signal exit command.")
     # 6. session termination briefing
